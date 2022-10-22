@@ -1,0 +1,71 @@
+version: '3.2'
+
+services:
+  reverse-proxy:
+    image: 'jwilder/nginx-proxy'
+    container_name: 'reverse-proxy-${COMPOSE_PROJECT_NAME}'
+    ports:
+      - '${PORT}:80'
+    volumes:
+      - './proxy/vhosts:/etc/nginx/vhost.d'
+      - './proxy/config:/etc/nginx/conf.d'
+      - '/var/run/docker.sock:/tmp/docker.sock:ro'
+      - './proxy/certs:/etc/nginx/certs'
+
+  # прокси для пхп
+  php-proxy:
+    image: nginx
+    container_name: "php-proxy-${COMPOSE_PROJECT_NAME}"
+    volumes:
+      - './php/proxy/conf:/etc/nginx/conf.d'
+    environment:
+      VIRTUAL_HOST: "${BACKEND}"
+    links:
+      - php
+    volumes_from:
+      - php
+
+  php:
+    container_name: "php-${COMPOSE_PROJECT_NAME}"
+    build:
+       context: php
+       args:
+         EXTERNAL_IP: ${EXTERNAL_IP}
+    volumes:
+      - '../src:/var/www/html'
+    env_file:
+      - .env
+
+
+  mysql:
+    image: mysql:5.7
+    container_name: "mysql-${COMPOSE_PROJECT_NAME}"
+    env_file:
+      - .env
+    ports:
+      - "${MYSQL_PORT}:3306"
+    volumes:
+      - ./mysql:/docker-entrypoint-initdb.d
+    command: ['mysqld', '--character-set-server=utf8mb4', '--collation-server=utf8mb4_unicode_ci']
+
+### тут происходит подгрузка зависимостей для бека и фронта
+  php-cli:
+    container_name: "php-cli-${COMPOSE_PROJECT_NAME}"
+    build:
+      context: php
+    volumes:
+      - "../src:/var/www/html"
+    command: bash -c  "${BACKEND_DEPLOY_SCRIPT}"
+    depends_on:
+      - mysql
+
+  adminer:
+    container_name: "adminer-${COMPOSE_PROJECT_NAME}"
+    image: adminer
+    restart: always
+    ports:
+      - "${ADMINER_PORT}:8080"
+    env_file:
+      - .env
+    environment:
+      ADMINER_DEFAULT_SERVER: mysql

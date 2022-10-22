@@ -32,22 +32,21 @@ ctrl + alt + S
     - Host: `backend.my`
     - Port: `83`
     - Mapping: выбираем локальную папку src и соотносим с `/var/www/html` (именно в этой папке в контейнере лежит проект)
-![](readmy/images/Pasted image 20221022152908.png)
 
 2. PHP (пункт меню)
    Cli interpriter -> ... (создать новый) -> from docker
-   ![](readmy/images/Pasted image 20221022153204.png)
+   
+  из списка выберите ```yii2-php``` (не yii2-php-cli)
 
 3. Панель дебага - редактировать конфигурацию
-   ![[Pasted image 20221022153325.png]]![](readmy/images/Pasted image 20221022153325.png)
    Из предложенного списка выберите Docker Image
    Перейдите в консоль и наберите
    ```docker ps```
    в php storm вставляем image name и container name
-   ![](readmy/images/Pasted image 20221022153643.png)
-   ![](readmy/images/Pasted image 20221022153811.png)
+   
 4. PHP -> Debug -> DBGp Proxy
-    - IDE Key: PHPSTORM
+    - IDE Key: `PHPSTORM`
+    
 Остальное оставить как есть.
 
 5. Установите точку для дебага, скачайте приложение для вашего браузера. и пробуйте запустить

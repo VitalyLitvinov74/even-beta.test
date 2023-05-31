@@ -7,12 +7,13 @@ use yii\db\ActiveRecord;
 
 /**
  * @property int id
- * @property string name
+ * @property int cook_id
+ * @property int meal_id
  */
-final class CooksTable extends ActiveRecord
+final class CookMealTable extends ActiveRecord
 {
     public static function tableName(): string
     {
-        return 'cooks';
+        return 'cook_meal';
     }
 }

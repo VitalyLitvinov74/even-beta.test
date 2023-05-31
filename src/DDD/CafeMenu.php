@@ -8,7 +8,14 @@ final class CafeMenu
     /**
      * @param Meal[] $meals
      */
-    public function __construct(array $meals)
+    public function __construct(private array $meals)
     {
+    }
+
+    public function persist(): void
+    {
+        foreach ($this->meals as $meal){
+            $meal->persist();
+        }
     }
 }

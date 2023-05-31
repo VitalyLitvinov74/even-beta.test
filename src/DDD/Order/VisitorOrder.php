@@ -23,6 +23,8 @@ final class VisitorOrder implements PersistInterface
 
     public function persist(): void
     {
-        // TODO: Implement persist() method.
+        foreach ($this->items as $item){
+            $item->persist();
+        }
     }
 }

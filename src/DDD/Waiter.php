@@ -5,7 +5,6 @@ namespace app\Domain;
 
 use app\DDD\Order\Item;
 use app\DDD\Order\VisitorOrder;
-use app\Tables\VisitorOrdersTable;
 
 final class Waiter implements PersistInterface
 {

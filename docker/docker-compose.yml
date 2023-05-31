@@ -22,8 +22,6 @@ services:
       VIRTUAL_HOST: "${BACKEND}"
     links:
       - php
-    volumes_from:
-      - php
 
   php:
     container_name: "php-${COMPOSE_PROJECT_NAME}"
@@ -58,14 +56,3 @@ services:
     command: bash -c  "${BACKEND_DEPLOY_SCRIPT}"
     depends_on:
       - mysql
-
-  adminer:
-    container_name: "adminer-${COMPOSE_PROJECT_NAME}"
-    image: adminer
-    restart: always
-    ports:
-      - "${ADMINER_PORT}:8080"
-    env_file:
-      - .env
-    environment:
-      ADMINER_DEFAULT_SERVER: mysql

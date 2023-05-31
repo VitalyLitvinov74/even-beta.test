@@ -3,10 +3,7 @@ declare(strict_types=1);
 
 namespace app\Domain;
 
-
-use app\Tables\CookMealTable;
 use app\Tables\CooksTable;
-use app\Tables\MealsTable;
 
 final class Cook implements PersistInterface
 {
@@ -40,8 +37,20 @@ final class Cook implements PersistInterface
         return new CafeMenu($this->preparedMeals);
     }
 
-    public function persist(): void
+    public function persist(): CooksTable
     {
-
+        /** @var CooksTable $cook */
+        $cook = CooksTable::find()->where(['uuid'=>$this->uuid])->one();
+        if($cook === null){
+            $cook = new CooksTable();
+            $cook->name = $this->name;
+        }
+        $meals = [];
+        foreach ($this->preparedMeals as $meal){
+            $meals[] = $meal->persist();
+        }
+        $cook->meals = $meals;
+        $cook->save();
+        return $cook;
     }
 }

@@ -4,6 +4,7 @@ declare(strict_types=1);
 namespace app\DDD\Order;
 
 use app\Domain\PersistInterface;
+use app\Tables\VisitorOrdersTable;
 
 final class VisitorOrder implements PersistInterface
 {
@@ -13,6 +14,7 @@ final class VisitorOrder implements PersistInterface
     public function __construct(string $visitorUuid)
     {
         $this->items = [];
+        $this->visitorUuid = $visitorUuid;
     }
 
     public function addItem(Item $item): self
@@ -21,10 +23,20 @@ final class VisitorOrder implements PersistInterface
         return $this;
     }
 
-    public function persist(): void
+    public function persist(): VisitorOrdersTable
     {
-        foreach ($this->items as $item){
-            $item->persist();
+        /** @var VisitorOrdersTable $order */
+        $order = VisitorOrdersTable::find()->where(['visitorUuid' => $this->visitorUuid])->one();
+        if ($order === null) {
+            $order = new VisitorOrdersTable();
+            $order->visitor_id = $this->visitorUuid;
         }
+        $items = [];
+        foreach ($this->items as $item) {
+            $items[] = $item->persist();
+        }
+        $order->items = $items;
+        $order->save();
+        return $order;
     }
 }

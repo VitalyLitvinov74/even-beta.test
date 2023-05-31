@@ -10,7 +10,7 @@ final class Meal implements PersistInterface
     public static function restoreByName(string $name): self
     {
         /** @var MealsTable $meal */
-        $meal = MealsTable::find()->where(['id'=>$name])->one();
+        $meal = MealsTable::find()->where(['id' => $name])->one();
         return new self($meal->name, $meal->price);
     }
 
@@ -28,9 +28,20 @@ final class Meal implements PersistInterface
         return $this->name;
     }
 
-
-    public function persist(): void
+    /**
+     * как правило отличительно особенностью блюда является его имя, имя ему служит идентификатором
+     * @return MealsTable
+     */
+    public function persist(): MealsTable
     {
-        // TODO: Implement persist() method.
+        /** @var MealsTable $record */
+        $record = MealsTable::find()->where(['price' => $this->price, 'name' => $this->name])->one();
+        if (null === $record) {
+            $record = new MealsTable();
+            $record->name = $this->name;
+            $record->price = $this->price;
+        }
+        $record->save();
+        return $record;
     }
 }

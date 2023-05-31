@@ -7,7 +7,6 @@ use yii\db\ActiveRecord;
 
 /**
  * @property int id
- * @property int order_id
  * @property int meal_id
  * @property int count
  * @property int price

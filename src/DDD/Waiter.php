@@ -5,6 +5,7 @@ namespace app\Domain;
 
 use app\DDD\Order\Item;
 use app\DDD\Order\VisitorOrder;
+use yii\db\ActiveRecord;
 
 final class Waiter implements PersistInterface
 {
@@ -17,9 +18,15 @@ final class Waiter implements PersistInterface
     {
     }
 
-    public function createOrder(string $forVisitorUuid): VisitorOrder
+    /**
+     * @param string $forVisitorUuid
+     * @return VisitorOrder
+     */
+    public function acceptVisitor(string $forVisitorUuid): VisitorOrder
     {
-        return new VisitorOrder($forVisitorUuid);
+        $visitorOrder = new VisitorOrder($forVisitorUuid);
+        $this->visitorOrders[] = $visitorOrder;
+        return $visitorOrder;
     }
 
     public function bringADish(Meal $meal, int $count, string $forVisitorUuid): void
@@ -39,7 +46,7 @@ final class Waiter implements PersistInterface
 
     }
 
-    public function persist(): void
+    public function persist(): ActiveRecord
     {
         foreach ($this->visitorOrders as $order){
             $order->persist();

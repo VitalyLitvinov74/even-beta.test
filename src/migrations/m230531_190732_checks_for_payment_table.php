@@ -25,11 +25,18 @@ class m230531_190732_checks_for_payment_table extends Migration
             'visitor_order_items',
             [
                 'id' => $this->primaryKey(),
-                'order_id' => $this->integer(),
                 'meal_id' => $this->integer(),
                 'count' => $this->integer(),
                 'price' => $this->integer(),
                 'summary_price' => $this->integer()
+            ]
+        );
+        $this->createTable(
+            'order_items_links',
+            [
+                'id' => $this->primaryKey(),
+                'order_id' => $this->integer(),
+                'item_id'=>$this->integer()
             ]
         );
     }
@@ -41,6 +48,7 @@ class m230531_190732_checks_for_payment_table extends Migration
     {
         $this->dropTable('visitor_orders');
         $this->dropTable('visitor_order_items');
+        $this->dropTable('order_items_links');
     }
 
     /*

@@ -14,7 +14,8 @@ class m230531_185747_cook_table extends Migration
     {
         $this->createTable('cooks',[
             'id'=>$this->primaryKey(),
-            'name'=>$this->string()
+            'name'=>$this->string(),
+            'uuid'=>$this->string()
         ]);
     }
 

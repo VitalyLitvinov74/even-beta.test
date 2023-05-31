@@ -16,7 +16,6 @@ final class DDDController extends Controller
 {
     /**
      * Просим повара приготовить блюдо
-     * @param int $cookId
      * @return void
      */
     public function actionCookMeal()
@@ -29,7 +28,7 @@ final class DDDController extends Controller
         }
     }
 
-    public function actionPopulateMeals()
+    public function actionPopulatedMeals()
     {
         $menu = MealsTable::find()->all();
         return [
@@ -38,13 +37,13 @@ final class DDDController extends Controller
     }
 
     /**
-     * Как только пользователь появился в кафе, для него создается чек (заводится счет)
+     * Как только официант принял посетителя в кафе, то для него создается чек (заводится счет)
      * @param string $visitorUuid
      * @return void
      */
     public function actionWelcomeToCafe(string $visitorUuid){
         $waiter = new Waiter();
-        $waiter->createOrder($visitorUuid);
+        $waiter->acceptVisitor($visitorUuid);
         $waiter->persist();
     }
 

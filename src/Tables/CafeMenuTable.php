@@ -10,6 +10,7 @@ use yii\db\ActiveRecord;
 
 /**
  * @property int $id
+ * @property  int $cook_id
  * @property Meal[] $meals
  */
 final class CafeMenuTable extends ActiveRecord
@@ -22,8 +23,10 @@ final class CafeMenuTable extends ActiveRecord
     public function behaviors(): array
     {
         return [
-            'class' => SaveRelationsBehavior::class,
-            'relations' => ['meals']
+            [
+                'class' => SaveRelationsBehavior::class,
+                'relations' => ['meals']
+            ]
         ];
     }
 

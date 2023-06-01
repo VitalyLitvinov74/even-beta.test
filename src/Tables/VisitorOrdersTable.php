@@ -9,7 +9,7 @@ use yii\db\ActiveRecord;
 
 /**
  * @property int id
- * @property string visitor_id
+ * @property string $visitor_uuid
  * @property int summary_price
  * @property VisitorOrderItemsTable[] items
  */

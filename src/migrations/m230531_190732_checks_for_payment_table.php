@@ -16,7 +16,7 @@ class m230531_190732_checks_for_payment_table extends Migration
             'visitor_orders',
             [
                 'id' => $this->primaryKey(),
-                'visitor_id' => $this->integer(),
+                'visitor_uuid' => $this->string(),
                 'summary_price' => $this->integer()
             ]
         );

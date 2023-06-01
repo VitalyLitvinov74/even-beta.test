@@ -15,7 +15,7 @@ final class VisitorOrder
     public static function initial(string $visitorUuid): self
     {
         $record = new VisitorOrdersTable();
-        $record->visitor_id = $visitorUuid;
+        $record->visitor_uuid = $visitorUuid;
         $record->summary_price = 0;
         $record->save();
         return self::restoreById($record->id);

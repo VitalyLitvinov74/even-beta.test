@@ -22,18 +22,14 @@ final class CafeMenu
     {
         $recordCafeMenu = self::record($this->cookId);
         $mealRecord = MealsTable::find()->where(['name'=>$meal->name()])->one();
-        $recordCafeMenu->meals[] = $mealRecord;
+        $recordCafeMenu->meals = array_merge([$mealRecord], $recordCafeMenu->meals);
         $recordCafeMenu->save();
     }
 
     private static function record(int $cookId): CafeMenuTable{
         /** @var CafeMenuTable $recordCafeMenu */
         $recordCafeMenu = CafeMenuTable::find()
-            ->where([
-                'id'=>CookCafeMenuTable::find()
-                    ->select('cafe_menu_id')
-                    ->where(['cook_id'=>$cookId])
-            ])
+            ->where(['cook_id'=>$cookId])
             ->one();
         return $recordCafeMenu;
     }

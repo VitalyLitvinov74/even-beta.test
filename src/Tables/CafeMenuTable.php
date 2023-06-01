@@ -3,7 +3,7 @@ declare(strict_types=1);
 
 namespace app\Tables;
 
-use app\Domain\Meal;
+use app\DDD\Meal;
 use lhs\Yii2SaveRelationsBehavior\SaveRelationsBehavior;
 use yii\db\ActiveQuery;
 use yii\db\ActiveRecord;

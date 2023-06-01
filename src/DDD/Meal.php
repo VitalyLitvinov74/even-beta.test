@@ -1,7 +1,7 @@
 <?php
 declare(strict_types=1);
 
-namespace app\Domain;
+namespace app\DDD;
 
 use app\Tables\MealsTable;
 

@@ -39,9 +39,10 @@ final class CooksTable extends ActiveRecord
         return 'cooks';
     }
 
-    public function getCafeMenu(): ActiveQuery{
+    public function getCafeMenu(): ActiveQuery
+    {
         return $this
-            ->hasOne(CafeMenuTable::class,['id'=>'cafe_menu_id'])
-            ->viaTable('cook_cafe_menu', ['cook_id'=>'id']);
+            ->hasOne(CafeMenuTable::class, ['id' => 'cafe_menu_id'])
+            ->viaTable('cook_cafe_menu', ['cook_id' => 'id']);
     }
 }

@@ -3,8 +3,8 @@ declare(strict_types=1);
 
 namespace app\DDD\Order;
 
-use app\Domain\Meal;
-use app\Domain\PersistInterface;
+use app\DDDMeal;
+use app\DDD\PersistInterface;
 use app\Tables\MealsTable;
 use app\Tables\VisitorOrderItemsTable;
 

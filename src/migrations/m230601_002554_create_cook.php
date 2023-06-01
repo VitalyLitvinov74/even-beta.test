@@ -1,5 +1,6 @@
 <?php
 
+use app\DDD\Cook;
 use app\Tables\CooksTable;
 use yii\db\Migration;
 
@@ -13,10 +14,10 @@ class m230601_002554_create_cook extends Migration
      */
     public function safeUp()
     {
-        $cook = new CooksTable();
-        $cook->name = 'test';
-        $cook->uuid = '12345';
-        $cook->save();
+        Cook::initial(
+            "тестовый повар",
+            "1234567"
+        );
     }
 
     /**

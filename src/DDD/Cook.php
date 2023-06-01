@@ -1,7 +1,7 @@
 <?php
 declare(strict_types=1);
 
-namespace app\Domain;
+namespace app\DDD;
 
 use app\Tables\CafeMenuTable;
 use app\Tables\CooksTable;
@@ -18,6 +18,7 @@ final class Cook
         $record = new CooksTable();
         $record->name = $name;
         $record->uuid = $uuid;
+        $record->cafeMenu = new CafeMenuTable([]);
         $record->save();
         return new self($record->id);
     }

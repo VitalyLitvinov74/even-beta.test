@@ -1,9 +1,10 @@
 <?php
 declare(strict_types=1);
 
-namespace app\Domain;
+namespace app\DDD;
 
 use app\Tables\CafeMenuTable;
+use app\Tables\CookCafeMenuTable;
 use app\Tables\MealsTable;
 
 final class CafeMenu
@@ -27,7 +28,13 @@ final class CafeMenu
 
     private static function record(int $cookId): CafeMenuTable{
         /** @var CafeMenuTable $recordCafeMenu */
-        $recordCafeMenu = CafeMenuTable::find()->where(['cook_id'=>$cookId])->one();
+        $recordCafeMenu = CafeMenuTable::find()
+            ->where([
+                'id'=>CookCafeMenuTable::find()
+                    ->select('cafe_menu_id')
+                    ->where(['cook_id'=>$cookId])
+            ])
+            ->one();
         return $recordCafeMenu;
     }
 }

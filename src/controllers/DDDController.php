@@ -3,13 +3,13 @@ declare(strict_types=1);
 
 namespace app\controllers;
 
-use app\Domain\Cook;
-use app\Domain\Meal;
-use app\Domain\Waiter;
+use app\DDD\Cook;
+use app\DDD\Meal;
+use app\DDD\Waiter;
 use app\forms\MealForm;
 use app\Tables\MealsTable;
-use PHPUnit\Framework\Warning;
 use Yii;
+use yii\helpers\VarDumper;
 use yii\rest\Controller;
 
 final class DDDController extends Controller
@@ -21,10 +21,11 @@ final class DDDController extends Controller
     public function actionCookMeal()
     {
         $form = new MealForm();
-        if ($form->load(Yii::$app->request->post()) and $form->validate()) {
-            $cook = Cook::restoreById($form->cookId);
-            $cook->makeADish($form->name, $form->price);
+        if ($form->load(Yii::$app->request->post(), '') and $form->validate()) {
+            $cook = Cook::restoreById((int) $form->cookId);
+            $cook->makeADish($form->name, (int) $form->price);
         }
+        VarDumper::dump($form->getErrors());
     }
 
     public function actionPopulatedMeals()

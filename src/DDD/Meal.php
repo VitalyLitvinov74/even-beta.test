@@ -5,16 +5,25 @@ namespace app\Domain;
 
 use app\Tables\MealsTable;
 
-final class Meal implements PersistInterface
+final class Meal
 {
+    public static function initial(string $name, int $price): self
+    {
+        $record = new MealsTable();
+        $record->name = $name;
+        $record->price = $price;
+        $record->save();
+        return new self($record->id, $name, $price);
+    }
+
     public static function restoreByName(string $name): self
     {
         /** @var MealsTable $meal */
         $meal = MealsTable::find()->where(['id' => $name])->one();
-        return new self($meal->name, $meal->price);
+        return new self($meal->id, $meal->name, $meal->price);
     }
 
-    public function __construct(private string $name, private int $price)
+    private function __construct(private int $id, private string $name, private int $price)
     {
     }
 
@@ -26,22 +35,5 @@ final class Meal implements PersistInterface
     public function name(): string
     {
         return $this->name;
-    }
-
-    /**
-     * как правило отличительно особенностью блюда является его имя, имя ему служит идентификатором
-     * @return MealsTable
-     */
-    public function persist(): MealsTable
-    {
-        /** @var MealsTable $record */
-        $record = MealsTable::find()->where(['price' => $this->price, 'name' => $this->name])->one();
-        if (null === $record) {
-            $record = new MealsTable();
-            $record->name = $this->name;
-            $record->price = $this->price;
-        }
-        $record->save();
-        return $record;
     }
 }

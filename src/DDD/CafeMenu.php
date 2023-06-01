@@ -4,46 +4,30 @@ declare(strict_types=1);
 namespace app\Domain;
 
 use app\Tables\CafeMenuTable;
-use app\Tables\CookCafeMenuTable;
-use app\Tables\CooksTable;
-use yii\db\ActiveRecord;
+use app\Tables\MealsTable;
 
-final class CafeMenu implements PersistInterface
+final class CafeMenu
 {
-    /**
-     * @param Meal[] $preparedMeals
-     */
-    public function __construct(private string $cookUuid, private array $preparedMeals)
+    private function __construct(private int $cookId)
     {
+    }
+
+    public static function restoreByCookId(int $cookId): self{
+
+        return new self($cookId);
     }
 
     public function addMealToMenu(Meal $meal): void
     {
-        $this->preparedMeals[] = $meal;
+        $recordCafeMenu = self::record($this->cookId);
+        $mealRecord = MealsTable::find()->where(['name'=>$meal->name()])->one();
+        $recordCafeMenu->meals[] = $mealRecord;
+        $recordCafeMenu->save();
     }
 
-    public function persist(): ActiveRecord
-    {
-        $menu = CafeMenuTable::find()
-            ->where([
-                'id' => CookCafeMenuTable::find()
-                    ->select('cafe_menu_id')
-                    ->where([
-                        'cook_id' => CooksTable::find()
-                            ->select('uuid')
-                            ->where(['uuid' => $this->cookUuid])
-                    ])
-            ])
-            ->one();
-        if ($menu === null) {
-            $menu = new CafeMenuTable();
-        }
-        $meals = [];
-        foreach ($this->preparedMeals as $meal) {
-            $meals[] = $meal->persist();
-        }
-        $menu->meals = $meals;
-        $menu->save();
-        return $menu;
+    private static function record(int $cookId): CafeMenuTable{
+        /** @var CafeMenuTable $recordCafeMenu */
+        $recordCafeMenu = CafeMenuTable::find()->where(['cook_id'=>$cookId])->one();
+        return $recordCafeMenu;
     }
 }

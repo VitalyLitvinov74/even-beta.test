@@ -8,32 +8,46 @@ use app\Domain\PersistInterface;
 use app\Tables\MealsTable;
 use app\Tables\VisitorOrderItemsTable;
 
-final class Item implements PersistInterface
+final class Item
 {
-    public function __construct(
-        private int $itemPrice,
-        private string $mealName,
-        private int $count,
-    )
+    public static function restoreById(int $id): self
     {
+        /** @var VisitorOrderItemsTable $record */
+        $record = VisitorOrderItemsTable::find()
+            ->where(['id' => $id])
+            ->one();
+        return new self($record->id, $record->price, $record->count);
     }
 
-    public function summaryPrice(): int{
-        return $this->itemPrice * $this->count;
-    }
-
-    public function persist(): VisitorOrderItemsTable
+    public static function initial(int $itemPrice, string $mealName, int $count): self
     {
         $mealId = MealsTable::find()
             ->select('id')
-            ->where(['name'=>$this->mealName])
+            ->where(['name' => $mealName])
             ->scalar();
-        $item = new VisitorOrderItemsTable();
-        $item->price = $this->itemPrice;
-        $item->meal_id = $mealId;
-        $item->count = $this->count;
-        $item->summary_price = $this->summaryPrice();
-        $item->save();
-        return $item;
+        $record = new VisitorOrderItemsTable();
+        $record->price = $itemPrice;
+        $record->count = $count;
+        $record->summary_price = $itemPrice * $count;
+        $record->meal_id = $mealId;
+        $record->save();
+        return self::restoreById($record->id);
+    }
+
+    private function __construct(
+        private int $id,
+        private int $itemPrice,
+        private int $count,
+    ) {
+    }
+
+    public function id(): int
+    {
+        return $this->id;
+    }
+
+    public function summaryPrice(): int
+    {
+        return $this->itemPrice * $this->count;
     }
 }

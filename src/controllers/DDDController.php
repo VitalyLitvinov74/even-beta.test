@@ -24,7 +24,6 @@ final class DDDController extends Controller
         if ($form->load(Yii::$app->request->post()) and $form->validate()) {
             $cook = Cook::restoreById($form->cookId);
             $cook->makeADish($form->name, $form->price);
-            $cook->persist();
         }
     }
 
@@ -42,9 +41,8 @@ final class DDDController extends Controller
      * @return void
      */
     public function actionWelcomeToCafe(string $visitorUuid){
-        $waiter = new Waiter();
+        $waiter = Waiter::restore();
         $waiter->acceptVisitor($visitorUuid);
-        $waiter->persist();
     }
 
     /**
@@ -57,12 +55,11 @@ final class DDDController extends Controller
      */
     public function actionBringADish(string $visitorUuid, string $mealName, int $count)
     {
-        $waiter = new Waiter();
+        $waiter = Waiter::restore();
         $waiter->bringADish(
             Meal::restoreByName($mealName),
             $count,
             $visitorUuid
         );
-        $waiter->persist();
     }
 }

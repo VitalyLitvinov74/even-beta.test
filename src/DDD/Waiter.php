@@ -5,28 +5,29 @@ namespace app\Domain;
 
 use app\DDD\Order\Item;
 use app\DDD\Order\VisitorOrder;
+use app\Tables\VisitorOrdersTable;
 use yii\db\ActiveRecord;
 
-final class Waiter implements PersistInterface
+final class Waiter
 {
-    /**
-     * @var VisitorOrder[]
-     */
-    private array $visitorOrders;
-
-    public function __construct()
+    private function __construct()
     {
     }
 
+    /** Сделано для единообразия */
+    public static function restore(): self
+    {
+        return new self();
+    }
+
     /**
-     * @param string $forVisitorUuid
+     * Принять посетителя
+     * @param string $visitorUuid
      * @return VisitorOrder
      */
-    public function acceptVisitor(string $forVisitorUuid): VisitorOrder
+    public function acceptVisitor(string $visitorUuid): VisitorOrder
     {
-        $visitorOrder = new VisitorOrder($forVisitorUuid);
-        $this->visitorOrders[] = $visitorOrder;
-        return $visitorOrder;
+        return VisitorOrder::initial($visitorUuid);
     }
 
     public function bringADish(Meal $meal, int $count, string $forVisitorUuid): void
@@ -36,29 +37,21 @@ final class Waiter implements PersistInterface
             $order = $this->acceptVisitor($forVisitorUuid);
         }
         $order->addItem(
-            new Item(
+            Item::initial(
                 $meal->price(),
                 $meal->name(),
-                $count,
+                $count
             )
         );
     }
 
     private function searchVisitorOrderByVisitorUuid(string $visitorUuid): VisitorOrder|null
     {
-        foreach ($this->visitorOrders as $visitorOrder) {
-            if ($visitorOrder->registeredOnVisitor($visitorUuid)) {
-                return $visitorOrder;
-            }
-        }
-        return null;
-    }
-
-    public function persist(): ActiveRecord
-    {
-        foreach ($this->visitorOrders as $order) {
-            $order->persist();
-        }
-        return new ActiveRecord();
+        /** @var VisitorOrdersTable $visitorRecord */
+        $visitorRecord = VisitorOrdersTable::find()
+            ->select('id')
+            ->where(['visitor_id' => $visitorUuid])
+            ->one();
+        return VisitorOrder::restoreById($visitorRecord->id);
     }
 }

@@ -19,6 +19,8 @@
 ```
 docker-compose up -d
 ```
+## Postman
+https://www.postman.com/solar-robot-131180/workspace/test/folder/2231425-30dbbc38-84dc-499f-9671-cd6064b58196
 
 ## Пояснения
 Тестовое задание выполнил в стиле DDD, т.к. в тестовом задании не было указано какой методологие пользоваться.

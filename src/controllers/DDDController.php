@@ -8,7 +8,9 @@ use app\DDD\Meal;
 use app\DDD\Waiter;
 use app\forms\MealForm;
 use app\Tables\MealsTable;
+use app\Tables\VisitorOrderItemsTable;
 use Yii;
+use yii\db\Expression;
 use yii\helpers\VarDumper;
 use yii\rest\Controller;
 
@@ -22,18 +24,33 @@ final class DDDController extends Controller
     {
         $form = new MealForm();
         if ($form->load(Yii::$app->request->post(), '') and $form->validate()) {
-            $cook = Cook::restoreById((int) $form->cookId);
-            $cook->makeADish($form->name, (int) $form->price);
+            $cook = Cook::restoreById((int)$form->cookId);
+            $cook->makeADish($form->name, (int)$form->price);
         }
-        VarDumper::dump($form->getErrors());
     }
 
     public function actionPopulatedMeals()
     {
-        $menu = MealsTable::find()->all();
-        return [
-            'items' => $menu
-        ];
+        return MealsTable::find()
+            ->select([
+                'id',
+                'name',
+                'price',
+                'total_orders' => new Expression('coalesce(total, 0)')
+            ])
+            ->leftJoin(
+                [
+                    'total_orders' => VisitorOrderItemsTable::find()
+                        ->select([
+                            'meal_id',
+                            'total' => new Expression('sum(count)')
+                        ])
+                        ->groupBy('meal_id')
+                ],
+                'total_orders.meal_id=meals.id')
+            ->orderBy(['total_orders' => SORT_DESC])
+            ->asArray()
+            ->all();
     }
 
     /**
@@ -41,7 +58,8 @@ final class DDDController extends Controller
      * @param string $visitorUuid
      * @return void
      */
-    public function actionWelcomeToCafe(string $visitorUuid){
+    public function actionWelcomeToCafe(string $visitorUuid)
+    {
         $waiter = Waiter::restore();
         $waiter->acceptVisitor($visitorUuid);
     }

@@ -22,6 +22,8 @@ services:
       VIRTUAL_HOST: "${BACKEND}"
     links:
       - php
+    volumes_from:
+      - php
 
   php:
     container_name: "php-${COMPOSE_PROJECT_NAME}"

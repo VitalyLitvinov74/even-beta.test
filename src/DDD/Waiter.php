@@ -7,6 +7,7 @@ use app\DDD\Order\Item;
 use app\DDD\Order\VisitorOrder;
 use app\Tables\VisitorOrdersTable;
 use yii\db\ActiveRecord;
+use yii\helpers\VarDumper;
 
 final class Waiter
 {
@@ -33,9 +34,6 @@ final class Waiter
     public function bringADish(Meal $meal, int $count, string $forVisitorUuid): void
     {
         $order = $this->searchVisitorOrderByVisitorUuid($forVisitorUuid);
-        if ($order === null) {
-            $order = $this->acceptVisitor($forVisitorUuid);
-        }
         $order->addItem(
             Item::initial(
                 $meal->price(),
@@ -47,11 +45,10 @@ final class Waiter
 
     private function searchVisitorOrderByVisitorUuid(string $visitorUuid): VisitorOrder|null
     {
-        /** @var VisitorOrdersTable $visitorRecord */
-        $visitorRecord = VisitorOrdersTable::find()
+        $visitorOrderId = VisitorOrdersTable::find()
             ->select('id')
-            ->where(['visitor_id' => $visitorUuid])
-            ->one();
-        return VisitorOrder::restoreById($visitorRecord->id);
+            ->where(['visitor_uuid' => $visitorUuid])
+            ->scalar();
+        return VisitorOrder::restoreById($visitorOrderId);
     }
 }

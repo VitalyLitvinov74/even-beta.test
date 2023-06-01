@@ -19,7 +19,7 @@ final class Meal
     public static function restoreByName(string $name): self
     {
         /** @var MealsTable $meal */
-        $meal = MealsTable::find()->where(['id' => $name])->one();
+        $meal = MealsTable::find()->where(['name' => $name])->one();
         return new self($meal->id, $meal->name, $meal->price);
     }
 

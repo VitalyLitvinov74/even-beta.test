@@ -30,7 +30,7 @@ final class VisitorOrder
     {
         /** @var VisitorOrdersTable $recordVisitorOrder */
         $recordVisitorOrder = VisitorOrdersTable::find()->where(['id'=>$this->orderId])->one();
-        $recordVisitorOrder->items[] = $item->id();
+        $recordVisitorOrder->items = array_merge([$item->id()], $recordVisitorOrder->items);
         $recordVisitorOrder->summary_price += $item->summaryPrice();
         $recordVisitorOrder->save();
         return $this;

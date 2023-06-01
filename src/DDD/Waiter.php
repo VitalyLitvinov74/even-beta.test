@@ -40,7 +40,6 @@ final class Waiter implements PersistInterface
                 $meal->price(),
                 $meal->name(),
                 $count,
-                $forVisitorUuid
             )
         );
     }

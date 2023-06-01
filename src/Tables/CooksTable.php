@@ -7,12 +7,14 @@ use app\Domain\Meal;
 use lhs\Yii2SaveRelationsBehavior\SaveRelationsBehavior;
 use yii\db\ActiveQuery;
 use yii\db\ActiveRecord;
+use yii\widgets\Menu;
 
 /**
  * @property int id
  * @property string name
  * @property string uuid
  * @property Meal[] $meals
+ * @property CafeMenuTable cafeMenu
  */
 final class CooksTable extends ActiveRecord
 {
@@ -22,7 +24,8 @@ final class CooksTable extends ActiveRecord
             [
                 'class' => SaveRelationsBehavior::class,
                 'relations' => [
-                    'meals'
+                    'meals',
+                    'cafeMenu'
                 ]
             ]
         ];
@@ -44,5 +47,11 @@ final class CooksTable extends ActiveRecord
     {
         return $this->hasMany(MealsTable::class, ['id' => 'meal_id'])
             ->viaTable('cook_meal', ['cook_id' => 'id']);
+    }
+
+    public function getCafeMenu(): ActiveQuery{
+        return $this
+            ->hasOne(CafeMenuTable::class,['id'=>'cafe_menu_id'])
+            ->viaTable('cook_cafe_menu', ['cook_id'=>'id']);
     }
 }

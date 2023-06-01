@@ -3,18 +3,25 @@ declare(strict_types=1);
 
 namespace app\Domain;
 
-final class CafeMenu
+use yii\db\ActiveRecord;
+
+final class CafeMenu implements PersistInterface
 {
     /**
-     * @param Meal[] $meals
+     * @param Meal[] $preparedMeals
      */
-    public function __construct(private array $meals)
+    public function __construct(private array $preparedMeals)
     {
     }
 
-    public function persist(): void
+    public function addMealToMenu(Meal $meal): void
     {
-        foreach ($this->meals as $meal){
+        $this->preparedMeals[] = $meal;
+    }
+
+    public function persist(): ActiveRecord
+    {
+        foreach ($this->preparedMeals as $meal){
             $meal->persist();
         }
     }

@@ -7,10 +7,7 @@ use app\Tables\CooksTable;
 
 final class Cook implements PersistInterface
 {
-    /**
-     * @var Meal[]
-     */
-    private array $preparedMeals;
+    private CafeMenu $cafeMenu;
 
     public static function restoreById(int $id): self
     {
@@ -23,18 +20,14 @@ final class Cook implements PersistInterface
 
     public function __construct(private string $name, private string $uuid)
     {
+        $this->cafeMenu = new CafeMenu([]);
     }
 
     public function makeADish(string $name, int $price): Meal
     {
         $meal = new Meal($name, $price);
-        $this->preparedMeals[] = $meal;
+        $this->cafeMenu->addMealToMenu($meal);
         return $meal;
-    }
-
-    public function createAMenu(): CafeMenu
-    {
-        return new CafeMenu($this->preparedMeals);
     }
 
     public function persist(): CooksTable
@@ -45,11 +38,9 @@ final class Cook implements PersistInterface
             $cook = new CooksTable();
             $cook->name = $this->name;
         }
-        $meals = [];
-        foreach ($this->preparedMeals as $meal){
-            $meals[] = $meal->persist();
-        }
-        $cook->meals = $meals;
+        $cafeMenu = $this->cafeMenu->persist();
+        $cook->menu = $cafeMenu;
+        $cook->meals = $cafeMenu->meals;
         $cook->save();
         return $cook;
     }

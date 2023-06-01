@@ -23,6 +23,14 @@ final class VisitorOrder implements PersistInterface
         return $this;
     }
 
+    public function registeredOnVisitor(string $visitorUuid): bool
+    {
+        if ($this->visitorUuid === $visitorUuid) {
+            return true;
+        }
+        return false;
+    }
+
     public function persist(): VisitorOrdersTable
     {
         /** @var VisitorOrdersTable $order */

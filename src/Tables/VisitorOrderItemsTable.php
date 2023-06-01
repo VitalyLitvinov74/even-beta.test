@@ -11,6 +11,7 @@ use yii\db\ActiveRecord;
  * @property int count
  * @property int price
  * @property int summary_price
+ * @property string uuid
  */
 final class VisitorOrderItemsTable extends ActiveRecord
 {

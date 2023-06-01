@@ -4,6 +4,7 @@ declare(strict_types=1);
 namespace app\DDD\Order;
 
 use app\Domain\PersistInterface;
+use app\Tables\VisitorOrderItemsTable;
 
 final class Item implements PersistInterface
 {
@@ -16,7 +17,7 @@ final class Item implements PersistInterface
     {
     }
 
-    public function persist(): void
+    public function persist(): VisitorOrderItemsTable
     {
 
     }

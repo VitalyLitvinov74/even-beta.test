@@ -40,6 +40,20 @@ class m230531_190026_meals_table extends Migration
             'CASCADE',
             'CASCADE'
         );
+
+        $this->createTable('cafe_menu', [
+            'id'=>$this->primaryKey(),
+        ]);
+        $this->createTable('cafe_menu_meals', [
+            'id'=>$this->primaryKey(),
+            'meal_id'=>$this->integer(),
+            'cafe_menu_id'=>$this->integer()
+        ]);
+        $this->createTable('cook_cafe_menu', [
+            'id'=>$this->primaryKey(),
+            'cook_id'=>$this->integer(),
+            'cafe_menu_id'=>$this->integer()
+        ]);
     }
 
     /**
@@ -49,6 +63,9 @@ class m230531_190026_meals_table extends Migration
     {
         $this->dropTable('cook_meal');
         $this->dropTable('meals');
+        $this->dropTable('cafe_menu');
+        $this->dropTable('cafe_menu_meals');
+        $this->dropTable('cook_cafe_menu');
     }
 
     /*

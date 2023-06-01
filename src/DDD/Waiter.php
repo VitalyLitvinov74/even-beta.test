@@ -32,6 +32,9 @@ final class Waiter implements PersistInterface
     public function bringADish(Meal $meal, int $count, string $forVisitorUuid): void
     {
         $order = $this->searchVisitorOrderByVisitorUuid($forVisitorUuid);
+        if ($order === null) {
+            $order = $this->acceptVisitor($forVisitorUuid);
+        }
         $order->addItem(
             new Item(
                 $meal->price(),
@@ -42,14 +45,21 @@ final class Waiter implements PersistInterface
         );
     }
 
-    private function searchVisitorOrderByVisitorUuid(string $visitorUuid): VisitorOrder{
-
+    private function searchVisitorOrderByVisitorUuid(string $visitorUuid): VisitorOrder|null
+    {
+        foreach ($this->visitorOrders as $visitorOrder) {
+            if ($visitorOrder->registeredOnVisitor($visitorUuid)) {
+                return $visitorOrder;
+            }
+        }
+        return null;
     }
 
     public function persist(): ActiveRecord
     {
-        foreach ($this->visitorOrders as $order){
+        foreach ($this->visitorOrders as $order) {
             $order->persist();
         }
+        return new ActiveRecord();
     }
 }
